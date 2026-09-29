@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ParkSmart - Smart Parking Management</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #172033;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #182848, #4b6cb7);
+            color: white;
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px #0002;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #5ee7df;
+        }
+
+        .system-status {
+            background: #ffffff22;
+            padding: 10px 18px;
+            border-radius: 20px;
+        }
+
+        .hero {
+            margin: 25px;
+            padding: 40px;
+            border-radius: 22px;
+            color: white;
+            background: linear-gradient(135deg, #4776e6, #8e54e9);
+            box-shadow: 0 10px 30px #0002;
+        }
+
+        .hero h1 {
+            font-size: 38px;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 17px;
+            line-height: 1.6;
+        }
+
+        .container {
+            padding: 0 25px 40px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 17px;
+            box-shadow: 0 5px 20px #0001;
+        }
+
+        .card h3 {
+            color: #667085;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .number {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .blue {
+            color: #4776e6;
+        }
+
+        .green {
+            color: #12a150;
+        }
+
+        .orange {
+            color: #f59e0b;
+        }
+
+        .section {
+            background: white;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 18px;
+            box-shadow: 0 5px 20px #0001;
+        }
+
+        .section-title {
+            font-size: 23px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #d0d5dd;
+            border-radius: 9px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #4776e6;
+        }
+
+        button {
+            border: none;
+            padding: 13px 22px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(135deg, #4776e6, #8e54e9);
+            margin-top: 18px;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .slot-map {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .slot {
+            padding: 20px 10px;
+            border-radius: 14px;
+            text-align: center;
+            font-weight: bold;
+            border: 2px solid;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .slot:hover {
+            transform: scale(1.03);
+        }
+
+        .available {
+            background: #ecfdf3;
+            color: #087443;
+            border-color: #34d399;
+        }
+
+        .reserved {
+            background: #fff7ed;
+            color: #c2410c;
+            border-color: #fb923c;
+        }
+
+        .legend {
+            display: flex;
+            gap: 25px;
+            margin-top: 18px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+        }
+
+        .green-dot {
+            background: #34d399;
+        }
+
+        .orange-dot {
+            background: #fb923c;
+        }
+
+        .message {
+            margin-top: 15px;
+            padding: 13px;
+            border-radius: 9px;
+            display: none;
+        }
+
+        .success {
+            display: block;
+            background: #ecfdf3;
+            color: #067647;
+        }
+
+        .error {
+            display: block;
+            background: #fef3f2;
+            color: #b42318;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .booking-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .booking-table th,
+        .booking-table td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .booking-table th {
+            background: #f5f7ff;
+        }
+
+        .penalty-box {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #fff7ed, #ffedd5);
+            display: none;
+        }
+
+        .penalty-amount {
+            font-size: 30px;
+            font-weight: bold;
+            color: #ea580c;
+            margin-top: 8px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 25px;
+            color: #667085;
+        }
+
+        @media(max-width: 900px) {
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width: 600px) {
+            .cards,
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                padding: 18px;
+            }
+
+            .hero {
+                margin: 15px;
+                padding: 25px;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .container {
+                padding: 0 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="logo">🚗 Park<span>Smart</span></div>
+    <div class="system-status">🟢 System Online</div>
+</nav>
+
+<section class="hero">
+    <h1>Smart Parking Management</h1>
+    <p>
+        Book parking slots easily, manage vehicle check-in and check-out,
+        monitor occupancy and automatically calculate overstay penalties.
+    </p>
+</section>
+
+<div class="container">
+
+    <!-- DASHBOARD -->
+
+    <div class="cards">
+
+        <div class="card">
+            <h3>TOTAL SLOTS</h3>
+            <div class="number blue" id="totalSlots">0</div>
+        </div>
+
+        <div class="card">
+            <h3>AVAILABLE SLOTS</h3>
+            <div class="number green" id="availableSlots">0</div>
+        </div>
+
+        <div class="card">
+            <h3>OCCUPIED SLOTS</h3>
+            <div class="number orange" id="occupiedSlots">0</div>
+        </div>
+
+        <div class="card">
+            <h3>PARKING STATUS</h3>
+            <div class="number green">ACTIVE</div>
+        </div>
+
+    </div>
+
+    <!-- PARKING LOT -->
+
+    <div class="section">
+
+        <div class="section-title">🏢 Parking Lot</div>
+
+        <div class="form-grid">
+
+            <div>
+                <label>Select Parking Lot</label>
+
+                <select id="parkingLot">
+                    <option value="">Loading parking lots...</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Location</label>
+
+                <input
+                    type="text"
+                    id="lotLocation"
+                    placeholder="Parking location"
+                    readonly>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- AVAILABLE SLOTS -->
+
+    <div class="section">
+
+        <div class="section-title">🅿️ Find Available Slots</div>
+
+        <div class="form-grid">
+
+            <div>
+                <label>Start Time</label>
+
+                <input
+                    type="datetime-local"
+                    id="startTime">
+            </div>
+
+            <div>
+                <label>End Time</label>
+
+                <input
+                    type="datetime-local"
+                    id="endTime">
+            </div>
+
+        </div>
+
+        <button onclick="findSlots()">
+            🔍 Find Available Slots
+        </button>
+
+        <div
+            class="slot-map"
+            id="availableSlotContainer">
+        </div>
+
+        <div
+            id="slotMessage"
+            class="message">
+        </div>
+
+        <div class="legend">
+
+            <div class="legend-item">
+                <div class="dot green-dot"></div>
+                Available
+            </div>
+
+            <div class="legend-item">
+                <div class="dot orange-dot"></div>
+                Reserved
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SLOT MAP -->
+
+    <div class="section">
+
+        <div class="section-title">🗺️ Parking Slot Map</div>
+
+        <div
+            class="slot-map"
+            id="slotMap">
+        </div>
+
+    </div>
+
+    <!-- BOOKING -->
+
+    <div class="section">
+
+        <div class="section-title">🎫 Book Parking Slot</div>
+
+        <div class="form-grid">
+
+            <div>
+                <label>Select Slot</label>
+
+                <select id="slotId">
+
+                    <option value="">
+                        Select Slot
+                    </option>
+
+                </select>
+            </div>
+
+            <div>
+                <label>Vehicle Number</label>
+
+                <input
+                    type="text"
+                    id="vehicleNumber"
+                    placeholder="TN01AB1234">
+            </div>
+
+            <div>
+                <label>Booking Start</label>
+
+                <input
+                    type="datetime-local"
+                    id="bookingStart">
+            </div>
+
+            <div>
+                <label>Booking End</label>
+
+                <input
+                    type="datetime-local"
+                    id="bookingEnd">
+            </div>
+
+        </div>
+
+        <button onclick="bookSlot()">
+            🚗 Confirm Booking
+        </button>
+
+        <div
+            id="bookingMessage"
+            class="message">
+        </div>
+
+    </div>
+
+    <!-- CHECK IN OUT -->
+
+    <div class="section">
+
+        <div class="section-title">
+            🔑 Vehicle Check-In / Check-Out
+        </div>
+
+        <div class="form-grid">
+
+            <div>
+                <label>Booking ID</label>
+
+                <input
+                    type="number"
+                    id="bookingId"
+                    placeholder="Enter booking ID">
+            </div>
+
+            <div>
+                <label>Check-In Time</label>
+
+                <input
+                    type="datetime-local"
+                    id="checkInTime">
+            </div>
+
+            <div>
+                <label>Check-Out Time</label>
+
+                <input
+                    type="datetime-local"
+                    id="checkOutTime">
+            </div>
+
+        </div>
+
+        <button onclick="checkInOut()">
+            ✅ Submit Check-In / Check-Out
+        </button>
+
+        <div
+            id="checkMessage"
+            class="message">
+        </div>
+
+        <div
+            class="penalty-box"
+            id="penaltyBox">
+
+            <div>💰 Overstay Penalty</div>
+
+            <div
+                class="penalty-amount"
+                id="penaltyAmount">
+                ₹0
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- BOOKING HISTORY -->
+
+    <div class="section">
+
+        <div class="section-title">📋 Booking History</div>
+
+        <div class="table-container">
+
+            <table class="booking-table">
+
+                <thead>
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Vehicle</th>
+                        <th>Slot</th>
+                        <th>Start</th>
+                        <th>End</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="bookingTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="footer">
+
+    🚗 ParkSmart © 2026
+
+    <br>
+
+    Smart Parking Slot Booking with Overstay Penalty
+
+</div>
+
+
+<script>
+
+/* =========================
+   MESSAGE
+========================= */
+
+function showMessage(element, text, type) {
+
+    element.innerText = text;
+    element.className = "message " + type;
+
+}
+
+
+/* =========================
+   DASHBOARD
+========================= */
+
+async function loadDashboard() {
+
+    try {
+
+        const response =
+            await fetch("/slots/occupancy");
+
+        const data =
+            await response.json();
+
+        document.getElementById("totalSlots")
+            .innerText = data.totalSlots;
+
+        document.getElementById("availableSlots")
+            .innerText = data.availableSlots;
+
+        document.getElementById("occupiedSlots")
+            .innerText = data.occupiedSlots;
+
+    } catch (error) {
+
+        console.log(error);
+
+    }
+
+}
+
+
+/* =========================
+   PARKING LOTS
+========================= */
+
+async function loadParkingLots() {
+
+    try {
+
+        const response =
+            await fetch("/parking-lots");
+
+        const lots =
+            await response.json();
+
+        const select =
+            document.getElementById("parkingLot");
+
+        select.innerHTML =
+            '<option value="">Select Parking Lot</option>';
+
+        lots.forEach(lot => {
+
+            const option =
+                document.createElement("option");
+
+            option.value = lot.id;
+
+            option.textContent =
+                lot.name;
+
+            option.dataset.location =
+                lot.location;
+
+            select.appendChild(option);
+
+        });
+
+    } catch (error) {
+
+        console.log(error);
+
+    }
+
+}
+
+
+/* =========================
+   PARKING LOCATION
+========================= */
+
+document.getElementById("parkingLot")
+    .addEventListener("change", function () {
+
+        const selected =
+            this.options[this.selectedIndex];
+
+        document.getElementById("lotLocation")
+            .value =
+            selected.dataset.location || "";
+
+    });
+
+
+/* =========================
+   LOAD SLOTS
+========================= */
+
+async function loadSlots() {
+
+    try {
+
+        const response =
+            await fetch("/slots");
+
+        const slots =
+            await response.json();
+
+        const select =
+            document.getElementById("slotId");
+
+        const map =
+            document.getElementById("slotMap");
+
+        select.innerHTML =
+            '<option value="">Select Slot</option>';
+
+        map.innerHTML = "";
+
+        slots.forEach(slot => {
+
+            /* DROPDOWN */
+
+            const option =
+                document.createElement("option");
+
+            option.value =
+                String(slot.id);
+
+            option.textContent =
+                slot.slotNumber +
+                " - " +
+                (slot.status || "AVAILABLE");
+
+            select.appendChild(option);
+
+
+            /* SLOT MAP */
+
+            const div =
+                document.createElement("div");
+
+            const isReserved =
+                slot.status &&
+                slot.status.toUpperCase() === "RESERVED";
+
+            div.className =
+                isReserved
+                    ? "slot reserved"
+                    : "slot available";
+
+            div.innerHTML =
+                "🅿️<br>" +
+                slot.slotNumber +
+                "<br><small>" +
+                (slot.status || "AVAILABLE") +
+                "</small>";
+
+            div.onclick = function () {
+
+                if (!isReserved) {
+
+                    select.value =
+                        String(slot.id);
+
+                }
+
+            };
+
+            map.appendChild(div);
+
+        });
+
+    } catch (error) {
+
+        console.log(error);
+
+    }
+
+}
+
+
+/* =========================
+   FIND AVAILABLE SLOTS
+========================= */
+
+async function findSlots() {
+
+    const start =
+        document.getElementById("startTime").value;
+
+    const end =
+        document.getElementById("endTime").value;
+
+    const container =
+        document.getElementById(
+            "availableSlotContainer"
+        );
+
+    const message =
+        document.getElementById("slotMessage");
+
+    container.innerHTML = "";
+
+    if (!start || !end) {
+
+        showMessage(
+            message,
+            "Please select start and end time.",
+            "error"
+        );
+
+        return;
+    }
+
+    if (new Date(end) <= new Date(start)) {
+
+        showMessage(
+            message,
+            "End time must be after start time.",
+            "error"
+        );
+
+        return;
+    }
+
+    try {
+
+        const response =
+            await fetch(
+                `/slots/available?startTime=${encodeURIComponent(start)}&endTime=${encodeURIComponent(end)}`
+            );
+
+        const slots =
+            await response.json();
+
+        if (!response.ok) {
+
+            showMessage(
+                message,
+                slots.error ||
+                "Unable to find slots.",
+                "error"
+            );
+
+            return;
+        }
+
+        if (slots.length === 0) {
+
+            showMessage(
+                message,
+                "No slots available for this time window.",
+                "error"
+            );
+
+            return;
+        }
+
+        message.style.display = "none";
+
+        slots.forEach(slot => {
+
+            const div =
+                document.createElement("div");
+
+            div.className =
+                "slot available";
+
+            div.innerHTML =
+                "🅿️<br>" +
+                slot.slotNumber +
+                "<br><small>AVAILABLE</small>";
+
+            div.onclick = function () {
+
+                document.getElementById("slotId")
+                    .value =
+                    String(slot.id);
+
+                document.getElementById("bookingStart")
+                    .value = start;
+
+                document.getElementById("bookingEnd")
+                    .value = end;
+
+                document.getElementById("slotId")
+                    .scrollIntoView({
+                        behavior: "smooth",
+                        block: "center"
+                    });
+
+            };
+
+            container.appendChild(div);
+
+        });
+
+    } catch (error) {
+
+        showMessage(
+            message,
+            "Unable to connect to server.",
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================
+   BOOK SLOT
+========================= */
+
+async function bookSlot() {
+
+    const slotId =
+        document.getElementById("slotId").value;
+
+    const vehicle =
+        document.getElementById("vehicleNumber").value.trim();
+
+    const start =
+        document.getElementById("bookingStart").value;
+
+    const end =
+        document.getElementById("bookingEnd").value;
+
+    const message =
+        document.getElementById("bookingMessage");
+
+
+    /* VALIDATION */
+
+    if (!slotId) {
+
+        showMessage(
+            message,
+            "Please select a parking slot.",
+            "error"
+        );
+
+        return;
+    }
+
+    if (!vehicle) {
+
+        showMessage(
+            message,
+            "Please enter vehicle number.",
+            "error"
+        );
+
+        return;
+    }
+
+    if (!start || !end) {
+
+        showMessage(
+            message,
+            "Please select booking start and end time.",
+            "error"
+        );
+
+        return;
+    }
+
+    if (new Date(end) <= new Date(start)) {
+
+        showMessage(
+            message,
+            "Booking end time must be after start time.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    /* IMPORTANT:
+       Slot ID is converted to Number
+    */
+
+    const data = {
+
+        slot: {
+            id: Number(slotId)
+        },
+
+        vehicleNumber: vehicle,
+
+        startTime: start,
+
+        endTime: end
+
+    };
+
+
+    console.log("Booking data:", data);
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/bookings",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(data)
+
+                }
+            );
+
+
+        const text =
+            await response.text();
+
+        let result;
+
+        try {
+            result = JSON.parse(text);
+        } catch {
+            result = {
+                error: text
+            };
+        }
+
+
+        if (!response.ok) {
+
+            showMessage(
+                message,
+                result.error ||
+                "Booking failed.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        showMessage(
+            message,
+            "🎉 Booking successful! Booking ID: " +
+            result.id,
+            "success"
+        );
+
+
+        /* Clear form */
+
+        document.getElementById("vehicleNumber")
+            .value = "";
+
+        document.getElementById("slotId")
+            .value = "";
+
+
+        loadDashboard();
+        loadSlots();
+        loadBookings();
+
+    } catch (error) {
+
+        console.log(error);
+
+        showMessage(
+            message,
+            "Server connection error.",
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================
+   CHECK IN / CHECK OUT
+========================= */
+
+async function checkInOut() {
+
+    const bookingId =
+        document.getElementById("bookingId").value;
+
+    const checkIn =
+        document.getElementById("checkInTime").value;
+
+    const checkOut =
+        document.getElementById("checkOutTime").value;
+
+    const message =
+        document.getElementById("checkMessage");
+
+    const penaltyBox =
+        document.getElementById("penaltyBox");
+
+
+    if (!bookingId || !checkIn) {
+
+        showMessage(
+            message,
+            "Booking ID and check-in time are required.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    const data = {
+
+        booking: {
+            id: Number(bookingId)
+        },
+
+        checkInTime: checkIn,
+
+        checkOutTime:
+            checkOut || null
+
+    };
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/check-in-out",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(data)
+
+                }
+            );
+
+
+        const text =
+            await response.text();
+
+        let result;
+
+        try {
+            result = JSON.parse(text);
+        } catch {
+            result = {
+                error: text
+            };
+        }
+
+
+        if (!response.ok) {
+
+            showMessage(
+                message,
+                result.error ||
+                "Check-in/out failed.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        showMessage(
+            message,
+            "✅ Check-in / Check-out completed successfully.",
+            "success"
+        );
+
+
+        penaltyBox.style.display =
+            "block";
+
+
+        document.getElementById("penaltyAmount")
+            .innerText =
+            "₹" +
+            Number(result.penalty || 0)
+                .toFixed(2);
+
+
+        loadDashboard();
+        loadSlots();
+
+    } catch (error) {
+
+        showMessage(
+            message,
+            "Server connection error.",
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================
+   BOOKING HISTORY
+========================= */
+
+async function loadBookings() {
+
+    try {
+
+        const response =
+            await fetch("/bookings");
+
+        const bookings =
+            await response.json();
+
+        const table =
+            document.getElementById("bookingTable");
+
+        table.innerHTML = "";
+
+        bookings.forEach(booking => {
+
+            const row =
+                document.createElement("tr");
+
+            let slotName = "-";
+
+            /*
+             * Current backend hides Slot
+             * using @JsonIgnore.
+             * So use slot information
+             * when available.
+             */
+
+            if (booking.slot) {
+
+                slotName =
+                    booking.slot.slotNumber ||
+                    booking.slot.id;
+
+            }
+
+            row.innerHTML = `
+
+                <td>${booking.id}</td>
+
+                <td>${booking.vehicleNumber}</td>
+
+                <td>${slotName}</td>
+
+                <td>${booking.startTime}</td>
+
+                <td>${booking.endTime}</td>
+
+            `;
+
+            table.appendChild(row);
+
+        });
+
+    } catch (error) {
+
+        console.log(error);
+
+    }
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+loadDashboard();
+
+loadParkingLots();
+
+loadSlots();
+
+loadBookings();
+
+</script>
+
+</body>
+</html>
